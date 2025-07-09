@@ -5,7 +5,10 @@ const Razorpay = require('razorpay');
 const jwt = require('jsonwebtoken');
 
 const app = express();
-app.use(cors());
+app.use(cors({
+  origin: 'https://msjchampionstrophy.onrender.com', // 👈 allow your frontend
+  credentials: true,
+}));
 app.use(express.json());
 
 const connectDB = require('./config/db');
