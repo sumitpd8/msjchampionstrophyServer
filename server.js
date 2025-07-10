@@ -5,7 +5,19 @@ const Razorpay = require('razorpay');
 const jwt = require('jsonwebtoken');
 
 const app = express();
-app.use(cors());
+
+// Better CORS configuration for production
+app.use(cors({
+  origin: [
+    'https://msjchampionstrophy.onrender.com',
+    'http://localhost:3000',
+    'http://localhost:5173' // for Vite dev server
+  ],
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization']
+}));
+
 app.use(express.json());
 
 const connectDB = require('./config/db');
@@ -36,13 +48,16 @@ const authenticateAdmin = (req, res, next) => {
 
 // 🎟️ Admin Login Route
 app.post('/api/admin/login', async (req, res) => {
+  console.log('Admin login attempt:', req.body); // Add logging
   const { email, password } = req.body;
 
   if (email !== process.env.ADMIN_EMAIL || password !== process.env.ADMIN_PASSWORD) {
+    console.log('Invalid credentials provided');
     return res.status(401).json({ message: 'Invalid credentials' });
   }
 
   const token = jwt.sign({ admin: true }, process.env.JWT_SECRET, { expiresIn: '1d' });
+  console.log('Admin login successful');
   res.status(200).json({ token });
 });
 
@@ -75,6 +90,10 @@ app.use('/api/register', require('./routes/registration'));
 // Add this line to include the admin login route
 app.use('/api/admin', require('./routes/admin'));
 
+// Health check endpoint
+app.get('/health', (req, res) => {
+  res.status(200).json({ status: 'OK', timestamp: new Date().toISOString() });
+});
 
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
