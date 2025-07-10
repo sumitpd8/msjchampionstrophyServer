@@ -10,7 +10,7 @@ const app = express();
 app.use(cors({
   origin: [
     'https://msjchampionstrophy.onrender.com',
-    'https://msjchampionstrophy.netlify.app',
+    'https://msjchampionstrophyy.netlify.app',
     'http://localhost:3000',
     'http://localhost:5173' // for Vite dev server
   ],
