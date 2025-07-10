@@ -5,15 +5,8 @@ const Razorpay = require('razorpay');
 const jwt = require('jsonwebtoken');
 
 const app = express();
-app.use(cors({
-  origin: "https://msjchampionstrophy.onrender.com",
-  credentials: true,
-  methods: "GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS",
-  allowedHeaders: ["Content-Type", "Authorization"],
-}));
-
-// For preflight
-app.options("*", cors());app.use(express.json());
+app.use(cors());
+app.use(express.json());
 
 const connectDB = require('./config/db');
 connectDB();
@@ -40,11 +33,6 @@ const authenticateAdmin = (req, res, next) => {
     return res.status(401).json({ message: 'Invalid token' });
   }
 };
-
-// 🟢 Default route for GET /
-app.get('/', (req, res) => {
-  res.send('<h1>Welcome to MSJ Champions Trophy Server</h1>');
-});
 
 // 🎟️ Admin Login Route
 app.post('/api/admin/login', async (req, res) => {
